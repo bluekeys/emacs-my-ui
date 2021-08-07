@@ -1,12 +1,3 @@
-;; autoload
-
-;; [[file:../../../../Projects/home/emacs.org::*autoload][autoload:1]]
-;;;###autoload
-(defun my-ui ()
-  (interactive)
-  (message "UI"))
-;; autoload:1 ends here
-
 ;; Line highlight
 
 ;; [[file:../../../../Projects/home/emacs.org::*Line highlight][Line highlight:1]]
@@ -309,6 +300,69 @@
 ;; [[file:../../../../Projects/home/emacs.org::*yes/no => y/n][yes/no => y/n:1]]
 (fset 'yes-or-no-p 'y-or-n-p)
 ;; yes/no => y/n:1 ends here
+
+;; Org related UI tweaks
+;; TIP: use describe-face org- if you think something isn't looking its best
+
+
+;; [[file:../../../../Projects/home/emacs.org::*Org related UI tweaks][Org related UI tweaks:1]]
+(defun my/org-apply-ui ()
+  (interactive)
+  (with-eval-after-load 'org
+    (org-indent-mode) ; indent text according to outline structure
+    ;(variable-pitch-mode 1) ; UI - use variable pitch fonts
+    (auto-fill-mode 0) ; don't automatically break lines exceeding current-fill-column
+    (visual-line-mode 1) ; instead of breaking lines exceeding current-fill-column, visually wrap them
+
+    (customize-set-variable 'org-ellipsis " ➠")
+    (customize-set-variable 'org-hide-emphasis-markers t)
+    (customize-set-variable 'evil-auto-indent nil)
+    (customize-set-variable 'org-src-window-setup 'current-window
+                            "open org-src blocks in current window")
+
+;;; Replace list hyphen with dot
+    ;; (font-lock-add-keywords 'org-mode
+    ;;                         '(("^ *\\([-]\\) "
+    ;;                            (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) " "))))))
+
+;;; Ensure code blocks etc use fixed width fonts
+    (progn
+      (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-code nil :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+      (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+      (set-face-attribute 'org-table nil :weight 'semi-bold :inherit 'fixed-pitch)
+
+      (set-face-attribute 'org-level-1 nil :height 1.75)
+      (set-face-attribute 'org-level-2 nil :height 1.5)
+      (set-face-attribute 'org-level-3 nil :height 1.25)
+      (set-face-attribute 'org-level-4 nil :height 1.1)
+
+      (set-face-attribute 'org-document-title nil :height 4.0))))
+;; Org related UI tweaks:1 ends here
+
+;; Bullets
+
+;; [[file:../../../../Projects/home/emacs.org::*Bullets][Bullets:1]]
+(use-package org-bullets
+  :delight
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom (org-bullets-bullet-list '("➊" "➋" "➌" "➍" "➎" "➏" "➐" "➑" "➒")))
+;; Bullets:1 ends here
+
+;; autoloads
+
+;; [[file:../../../../Projects/home/emacs.org::*autoloads][autoloads:1]]
+;;;###autoload
+(defun my-ui ()
+  (interactive)
+  (message "UI"))
+;; autoloads:1 ends here
 
 ;; provide
 
